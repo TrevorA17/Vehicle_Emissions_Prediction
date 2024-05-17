@@ -1,6 +1,5 @@
 # Load necessary libraries
 library(caret)
-library(randomForest)
 
 # Load dataset
 vehicle_data <- read.csv("data/vehicle_data_large.csv", colClasses = c(
@@ -42,3 +41,27 @@ boot_ci <- quantile(boot_means, c(0.025, 0.975))
 
 print(paste("Bootstrap Mean:", boot_mean))
 print(paste("Bootstrap 95% CI:", boot_ci))
+
+# k-Fold Cross-Validation
+set.seed(123) # for reproducibility
+train_control <- trainControl(method = "cv", number = 10) # 10-fold cross-validation
+
+# Train the model using k-fold cross-validation
+model_cv <- train(CO2_Emissions ~ Engine_Size + Cylinders + Fuel_Type + City_MPG + Highway_MPG, 
+                  data = trainData, 
+                  method = "lm", 
+                  trControl = train_control)
+
+# Print cross-validation results
+print(model_cv)
+
+# Predict on the test data
+predictions_cv <- predict(model_cv, testData)
+
+# Evaluate model performance
+rmse_cv <- sqrt(mean((testData$CO2_Emissions - predictions_cv)^2))
+r_squared_cv <- cor(predictions_cv, testData$CO2_Emissions)^2
+
+print(paste("RMSE:", rmse_cv))
+print(paste("R-squared:", r_squared_cv))
+
