@@ -53,3 +53,45 @@ print(paste("Median Highway MPG:", median_highway_mpg))
 print(paste("Mean CO2 Emissions:", mean_co2_emissions))
 print(paste("Median CO2 Emissions:", median_co2_emissions))
 
+# Measures of Distribution
+range_engine_size <- range(vehicle_data$Engine_Size)
+var_engine_size <- var(vehicle_data$Engine_Size)
+sd_engine_size <- sd(vehicle_data$Engine_Size)
+
+range_city_mpg <- range(vehicle_data$City_MPG)
+var_city_mpg <- var(vehicle_data$City_MPG)
+sd_city_mpg <- sd(vehicle_data$City_MPG)
+
+range_highway_mpg <- range(vehicle_data$Highway_MPG)
+var_highway_mpg <- var(vehicle_data$Highway_MPG)
+sd_highway_mpg <- sd(vehicle_data$Highway_MPG)
+
+range_co2_emissions <- range(vehicle_data$CO2_Emissions)
+var_co2_emissions <- var(vehicle_data$CO2_Emissions)
+sd_co2_emissions <- sd(vehicle_data$CO2_Emissions)
+
+print(paste("Range Engine Size:", range_engine_size))
+print(paste("Variance Engine Size:", var_engine_size))
+print(paste("Standard Deviation Engine Size:", sd_engine_size))
+
+print(paste("Range City MPG:", range_city_mpg))
+print(paste("Variance City MPG:", var_city_mpg))
+print(paste("Standard Deviation City MPG:", sd_city_mpg))
+
+print(paste("Range Highway MPG:", range_highway_mpg))
+print(paste("Variance Highway MPG:", var_highway_mpg))
+print(paste("Standard Deviation Highway MPG:", sd_highway_mpg))
+
+print(paste("Range CO2 Emissions:", range_co2_emissions))
+print(paste("Variance CO2 Emissions:", var_co2_emissions))
+print(paste("Standard Deviation CO2 Emissions:", sd_co2_emissions))
+
+# Measures of Relationship
+correlation_matrix <- cor(vehicle_data[, sapply(vehicle_data, is.numeric)])
+
+print("Correlation Matrix:")
+print(correlation_matrix)
+
+# Scatter plot matrix
+pairs(vehicle_data[, sapply(vehicle_data, is.numeric)], main = "Scatter Plot Matrix")
+
