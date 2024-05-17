@@ -17,3 +17,12 @@ head(vehicle_data)
 
 # View the dataset in a separate viewer window
 View(vehicle_data)
+
+# Check for missing values
+missing_values <- sum(is.na(vehicle_data))
+
+# Display summary of missing values
+print(paste("Number of missing values:", missing_values))
+
+# Summary of missing values by column
+print(summary(is.na(vehicle_data)))
