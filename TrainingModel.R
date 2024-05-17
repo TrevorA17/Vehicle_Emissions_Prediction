@@ -65,3 +65,44 @@ r_squared_cv <- cor(predictions_cv, testData$CO2_Emissions)^2
 print(paste("RMSE:", rmse_cv))
 print(paste("R-squared:", r_squared_cv))
 
+# Load necessary libraries
+library(caret)
+library(e1071) # For SVM
+
+
+# k-Fold Cross-Validation
+set.seed(123) # for reproducibility
+train_control <- trainControl(method = "cv", number = 10) # 10-fold cross-validation
+
+# Train linear regression model
+model_lm <- train(CO2_Emissions ~ ., 
+                  data = vehicle_data, 
+                  method = "lm", 
+                  trControl = train_control)
+
+# Train decision tree regression model
+model_tree <- train(CO2_Emissions ~ ., 
+                    data = vehicle_data, 
+                    method = "rpart", 
+                    trControl = train_control)
+
+
+# Train support vector machine regression model
+model_svm <- train(CO2_Emissions ~ ., 
+                   data = vehicle_data, 
+                   method = "svmRadial", 
+                   trControl = train_control)
+
+# Print cross-validation results for all models
+print("Linear Regression:")
+print(model_lm)
+print("")
+
+print("Decision Tree Regression:")
+print(model_tree)
+print("")
+
+print("Support Vector Machine Regression:")
+print(model_svm)
+print("")
+
