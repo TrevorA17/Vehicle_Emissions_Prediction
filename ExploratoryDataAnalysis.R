@@ -170,3 +170,34 @@ library(gridExtra)
 # Arrange histograms and boxplots
 grid.arrange(p1, p2, p3, p4, nrow = 2, ncol = 2)
 grid.arrange(p5, p6, p7, p8, nrow = 2, ncol = 2)
+
+# Multivariate Plots
+
+# Scatter plots
+p9 <- ggplot(vehicle_data, aes(x = Engine_Size, y = CO2_Emissions)) + 
+  geom_point(color = "blue") + 
+  labs(title = "Scatter Plot of CO2 Emissions vs Engine Size", x = "Engine Size", y = "CO2 Emissions")
+
+p10 <- ggplot(vehicle_data, aes(x = City_MPG, y = CO2_Emissions)) + 
+  geom_point(color = "green") + 
+  labs(title = "Scatter Plot of CO2 Emissions vs City MPG", x = "City MPG", y = "CO2 Emissions")
+
+p11 <- ggplot(vehicle_data, aes(x = Highway_MPG, y = CO2_Emissions)) + 
+  geom_point(color = "purple") + 
+  labs(title = "Scatter Plot of CO2 Emissions vs Highway MPG", x = "Highway MPG", y = "CO2 Emissions")
+
+# Interaction plots
+p12 <- ggplot(vehicle_data, aes(x = Cylinders, y = CO2_Emissions, color = Fuel_Type)) + 
+  geom_boxplot() + 
+  labs(title = "Interaction Plot of CO2 Emissions by Cylinders and Fuel Type", x = "Cylinders", y = "CO2 Emissions")
+
+library(GGally)
+# Pair plots (scatterplot matrix)
+pairs_data <- vehicle_data[, sapply(vehicle_data, is.numeric)]
+p13 <- ggpairs(pairs_data)
+
+# Arrange scatter plots and interaction plot
+grid.arrange(p9, p10, p11, p12, nrow = 2, ncol = 2)
+
+# Display pair plots
+print(p13)
