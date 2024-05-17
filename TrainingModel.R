@@ -87,11 +87,6 @@ model_tree <- train(CO2_Emissions ~ .,
                     trControl = train_control)
 
 
-# Train support vector machine regression model
-model_svm <- train(CO2_Emissions ~ ., 
-                   data = vehicle_data, 
-                   method = "svmRadial", 
-                   trControl = train_control)
 
 # Print cross-validation results for all models
 print("Linear Regression:")
@@ -102,7 +97,10 @@ print("Decision Tree Regression:")
 print(model_tree)
 print("")
 
-print("Support Vector Machine Regression:")
-print(model_svm)
-print("")
+# Compare model performance using resamples
+resamps <- resamples(list(LinearRegression = model_lm, 
+                          DecisionTree = model_tree))
+
+# Summarize the results
+summary(resamps)
 
