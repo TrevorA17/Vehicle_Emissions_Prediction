@@ -95,3 +95,36 @@ print(correlation_matrix)
 # Scatter plot matrix
 pairs(vehicle_data[, sapply(vehicle_data, is.numeric)], main = "Scatter Plot Matrix")
 
+# ANOVA for CO2 Emissions by Cylinders
+anova_cylinders <- aov(CO2_Emissions ~ Cylinders, data = vehicle_data)
+summary(anova_cylinders)
+
+# ANOVA for CO2 Emissions by Fuel Type
+anova_fuel_type <- aov(CO2_Emissions ~ Fuel_Type, data = vehicle_data)
+summary(anova_fuel_type)
+
+# Two-way ANOVA for CO2 Emissions by Cylinders and Fuel Type
+anova_two_way <- aov(CO2_Emissions ~ Cylinders * Fuel_Type, data = vehicle_data)
+summary(anova_two_way)
+
+# Diagnostic plots for ANOVA models
+par(mfrow = c(2, 2)) # Set up the plotting area for multiple plots
+plot(anova_cylinders)
+plot(anova_fuel_type)
+plot(anova_two_way)
+par(mfrow = c(1, 1)) # Reset plotting area
+
+library(ggplot2)
+
+# Boxplots to visualize the differences
+ggplot(vehicle_data, aes(x = Cylinders, y = CO2_Emissions)) + 
+  geom_boxplot() +
+  labs(title = "CO2 Emissions by Cylinders", x = "Cylinders", y = "CO2 Emissions")
+
+ggplot(vehicle_data, aes(x = Fuel_Type, y = CO2_Emissions)) + 
+  geom_boxplot() +
+  labs(title = "CO2 Emissions by Fuel Type", x = "Fuel Type", y = "CO2 Emissions")
+
+ggplot(vehicle_data, aes(x = Cylinders, y = CO2_Emissions, fill = Fuel_Type)) + 
+  geom_boxplot() +
+  labs(title = "CO2 Emissions by Cylinders and Fuel Type", x = "Cylinders", y = "CO2 Emissions")
