@@ -128,3 +128,45 @@ ggplot(vehicle_data, aes(x = Fuel_Type, y = CO2_Emissions)) +
 ggplot(vehicle_data, aes(x = Cylinders, y = CO2_Emissions, fill = Fuel_Type)) + 
   geom_boxplot() +
   labs(title = "CO2 Emissions by Cylinders and Fuel Type", x = "Cylinders", y = "CO2 Emissions")
+
+
+# Univariate Plots
+
+# Histograms
+p1 <- ggplot(vehicle_data, aes(x = Engine_Size)) + 
+  geom_histogram(binwidth = 0.5, fill = "blue", color = "black") + 
+  labs(title = "Histogram of Engine Size", x = "Engine Size", y = "Frequency")
+
+p2 <- ggplot(vehicle_data, aes(x = City_MPG)) + 
+  geom_histogram(binwidth = 2, fill = "green", color = "black") + 
+  labs(title = "Histogram of City MPG", x = "City MPG", y = "Frequency")
+
+p3 <- ggplot(vehicle_data, aes(x = Highway_MPG)) + 
+  geom_histogram(binwidth = 2, fill = "purple", color = "black") + 
+  labs(title = "Histogram of Highway MPG", x = "Highway MPG", y = "Frequency")
+
+p4 <- ggplot(vehicle_data, aes(x = CO2_Emissions)) + 
+  geom_histogram(binwidth = 10, fill = "red", color = "black") + 
+  labs(title = "Histogram of CO2 Emissions", x = "CO2 Emissions", y = "Frequency")
+
+# Boxplots
+p5 <- ggplot(vehicle_data, aes(y = Engine_Size)) + 
+  geom_boxplot(fill = "blue", color = "black") + 
+  labs(title = "Boxplot of Engine Size", y = "Engine Size")
+
+p6 <- ggplot(vehicle_data, aes(y = City_MPG)) + 
+  geom_boxplot(fill = "green", color = "black") + 
+  labs(title = "Boxplot of City MPG", y = "City MPG")
+
+p7 <- ggplot(vehicle_data, aes(y = Highway_MPG)) + 
+  geom_boxplot(fill = "purple", color = "black") + 
+  labs(title = "Boxplot of Highway MPG", y = "Highway MPG")
+
+p8 <- ggplot(vehicle_data, aes(y = CO2_Emissions)) + 
+  geom_boxplot(fill = "red", color = "black") + 
+  labs(title = "Boxplot of CO2 Emissions", y = "CO2 Emissions")
+
+library(gridExtra)
+# Arrange histograms and boxplots
+grid.arrange(p1, p2, p3, p4, nrow = 2, ncol = 2)
+grid.arrange(p5, p6, p7, p8, nrow = 2, ncol = 2)
