@@ -26,3 +26,7 @@ print(paste("Number of missing values:", missing_values))
 
 # Summary of missing values by column
 print(summary(is.na(vehicle_data)))
+
+vehicle_data <- vehicle_data[, -1]
+
+write.csv(vehicle_data, file = "data/modified_vehicle_dataset.csv", row.names = FALSE)
