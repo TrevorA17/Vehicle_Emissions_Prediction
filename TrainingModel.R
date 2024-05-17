@@ -26,3 +26,19 @@ print("Dimensions of Training Data:")
 print(dim(trainData))
 print("Dimensions of Testing Data:")
 print(dim(testData))
+
+# Bootstrapping
+set.seed(123) # for reproducibility
+boot_samples <- createResample(trainData$CO2_Emissions, times = 1000)
+
+# Example of using bootstrap samples to calculate mean and its confidence interval
+boot_means <- sapply(boot_samples, function(indices) {
+  mean(trainData$CO2_Emissions[indices])
+})
+
+# Calculate the bootstrap confidence interval
+boot_mean <- mean(boot_means)
+boot_ci <- quantile(boot_means, c(0.025, 0.975))
+
+print(paste("Bootstrap Mean:", boot_mean))
+print(paste("Bootstrap 95% CI:", boot_ci))
