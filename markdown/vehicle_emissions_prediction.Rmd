@@ -1,0 +1,427 @@
+---
+title: "Vehicle Emissions Prediction"
+author: "Trevor Okinda"
+date: "2024"
+output:
+  github_document: 
+    toc: yes
+    toc_depth: 4
+    fig_width: 6
+    fig_height: 4
+    df_print: default
+editor_options:
+  chunk_output_type: console
+---
+
+# Student Details
+
+|                                              |     |
+|----------------------------------------------|-----|
+| **Student ID Number**                        | 134780 |
+| **Student Name**                             | Trevor Okinda |
+| **BBIT 4.2 Group**                           | C |
+| **Project Name**                             | Vehicle Emissions Prediction |
+
+# Setup Chunk
+
+**Note:** the following KnitR options have been set as the global defaults: <BR> `knitr::opts_chunk$set(echo = TRUE, warning = FALSE, eval = TRUE, collapse = FALSE, tidy = TRUE)`.
+
+More KnitR options are documented here <https://bookdown.org/yihui/rmarkdown-cookbook/chunk-options.html> and here <https://yihui.org/knitr/options/>.
+
+```{r setup, include=FALSE}
+library(formatR)
+knitr::opts_chunk$set(
+  warning = FALSE,
+  collapse = FALSE
+)
+```
+
+### Source: 
+
+The dataset that was used can be downloaded here: *\<https://www.kaggle.com/datasets/pogrebchtchikov/vehicle-emissions-and-performance-dataset\>*
+
+### Reference:
+
+*\<APA Citation:
+Pogrebchtchikov, D. (2023). Vehicle Emissions and Performance Dataset. Retrieved from https://www.kaggle.com/datasets/pogrebchtchikov/vehicle-emissions-and-performance-dataset\>\
+Refer to the APA 7th edition manual for rules on how to cite datasets: <https://apastyle.apa.org/style-grammar-guidelines/references/examples/data-set-references>*
+
+# Exploratory Data Analysis
+## Load dataset
+```{r Load dataset}
+# Load dataset
+vehicle_data <- read.csv("vehicle_data_large.csv", colClasses = c(
+  Vehicle_ID = "integer",
+  Engine_Size = "numeric",
+  Cylinders = "factor",
+  Fuel_Type = "factor",
+  City_MPG = "numeric",
+  Highway_MPG = "numeric",
+  CO2_Emissions = "numeric"
+))
+
+# Display the structure of the dataset
+str(vehicle_data)
+
+# View the first few rows of the dataset
+head(vehicle_data)
+
+# View the dataset in a separate viewer window
+View(vehicle_data)
+```
+
+## Measures of Frequency
+```{r MOF}
+# Measures of Frequency
+cylinder_freq <- table(vehicle_data$Cylinders)
+fuel_type_freq <- table(vehicle_data$Fuel_Type)
+
+print("Frequency of Cylinders:")
+print(cylinder_freq)
+
+print("Frequency of Fuel Type:")
+print(fuel_type_freq)
+```
+
+## Measures of Central Tendency
+```{r MOCT}
+# Measures of Central Tendency
+mean_engine_size <- mean(vehicle_data$Engine_Size)
+median_engine_size <- median(vehicle_data$Engine_Size)
+
+mean_city_mpg <- mean(vehicle_data$City_MPG)
+median_city_mpg <- median(vehicle_data$City_MPG)
+
+mean_highway_mpg <- mean(vehicle_data$Highway_MPG)
+median_highway_mpg <- median(vehicle_data$Highway_MPG)
+
+mean_co2_emissions <- mean(vehicle_data$CO2_Emissions)
+median_co2_emissions <- median(vehicle_data$CO2_Emissions)
+
+print(paste("Mean Engine Size:", mean_engine_size))
+print(paste("Median Engine Size:", median_engine_size))
+
+print(paste("Mean City MPG:", mean_city_mpg))
+print(paste("Median City MPG:", median_city_mpg))
+
+print(paste("Mean Highway MPG:", mean_highway_mpg))
+print(paste("Median Highway MPG:", median_highway_mpg))
+
+print(paste("Mean CO2 Emissions:", mean_co2_emissions))
+print(paste("Median CO2 Emissions:", median_co2_emissions))
+
+```
+
+## Measures of Distribution
+```{r MOD}
+# Measures of Distribution
+range_engine_size <- range(vehicle_data$Engine_Size)
+var_engine_size <- var(vehicle_data$Engine_Size)
+sd_engine_size <- sd(vehicle_data$Engine_Size)
+
+range_city_mpg <- range(vehicle_data$City_MPG)
+var_city_mpg <- var(vehicle_data$City_MPG)
+sd_city_mpg <- sd(vehicle_data$City_MPG)
+
+range_highway_mpg <- range(vehicle_data$Highway_MPG)
+var_highway_mpg <- var(vehicle_data$Highway_MPG)
+sd_highway_mpg <- sd(vehicle_data$Highway_MPG)
+
+range_co2_emissions <- range(vehicle_data$CO2_Emissions)
+var_co2_emissions <- var(vehicle_data$CO2_Emissions)
+sd_co2_emissions <- sd(vehicle_data$CO2_Emissions)
+
+print(paste("Range Engine Size:", range_engine_size))
+print(paste("Variance Engine Size:", var_engine_size))
+print(paste("Standard Deviation Engine Size:", sd_engine_size))
+
+print(paste("Range City MPG:", range_city_mpg))
+print(paste("Variance City MPG:", var_city_mpg))
+print(paste("Standard Deviation City MPG:", sd_city_mpg))
+
+print(paste("Range Highway MPG:", range_highway_mpg))
+print(paste("Variance Highway MPG:", var_highway_mpg))
+print(paste("Standard Deviation Highway MPG:", sd_highway_mpg))
+
+print(paste("Range CO2 Emissions:", range_co2_emissions))
+print(paste("Variance CO2 Emissions:", var_co2_emissions))
+print(paste("Standard Deviation C02 Emissions:", sd_co2_emissions))
+```
+
+## Measures of Relationship
+```{r MOR}
+# Measures of Relationship
+correlation_matrix <- cor(vehicle_data[, sapply(vehicle_data, is.numeric)])
+
+print("Correlation Matrix:")
+print(correlation_matrix)
+
+# Scatter plot matrix
+pairs(vehicle_data[, sapply(vehicle_data, is.numeric)], main = "Scatter Plot Matrix")
+```
+
+## ANOVA
+```{r ANOVA}
+# ANOVA for CO2 Emissions by Cylinders
+anova_cylinders <- aov(CO2_Emissions ~ Cylinders, data = vehicle_data)
+summary(anova_cylinders)
+
+# ANOVA for CO2 Emissions by Fuel Type
+anova_fuel_type <- aov(CO2_Emissions ~ Fuel_Type, data = vehicle_data)
+summary(anova_fuel_type)
+
+# Two-way ANOVA for CO2 Emissions by Cylinders and Fuel Type
+anova_two_way <- aov(CO2_Emissions ~ Cylinders * Fuel_Type, data = vehicle_data)
+summary(anova_two_way)
+
+# Diagnostic plots for ANOVA models
+par(mfrow = c(2, 2)) # Set up the plotting area for multiple plots
+plot(anova_cylinders)
+plot(anova_fuel_type)
+plot(anova_two_way)
+par(mfrow = c(1, 1)) # Reset plotting area
+```
+
+## Plots
+```{r plots}
+library(ggplot2)
+
+# Boxplots to visualize the differences
+ggplot(vehicle_data, aes(x = Cylinders, y = CO2_Emissions)) + 
+  geom_boxplot() +
+  labs(title = "CO2 Emissions by Cylinders", x = "Cylinders", y = "CO2 Emissions")
+
+ggplot(vehicle_data, aes(x = Fuel_Type, y = CO2_Emissions)) + 
+  geom_boxplot() +
+  labs(title = "CO2 Emissions by Fuel Type", x = "Fuel Type", y = "CO2 Emissions")
+
+ggplot(vehicle_data, aes(x = Cylinders, y = CO2_Emissions, fill = Fuel_Type)) + 
+  geom_boxplot() +
+  labs(title = "CO2 Emissions by Cylinders and Fuel Type", x = "Cylinders", y = "CO2 Emissions")
+
+
+# Univariate Plots
+
+# Histograms
+p1 <- ggplot(vehicle_data, aes(x = Engine_Size)) + 
+  geom_histogram(binwidth = 0.5, fill = "blue", color = "black") + 
+  labs(title = "Histogram of Engine Size", x = "Engine Size", y = "Frequency")
+
+p2 <- ggplot(vehicle_data, aes(x = City_MPG)) + 
+  geom_histogram(binwidth = 2, fill = "green", color = "black") + 
+  labs(title = "Histogram of City MPG", x = "City MPG", y = "Frequency")
+
+p3 <- ggplot(vehicle_data, aes(x = Highway_MPG)) + 
+  geom_histogram(binwidth = 2, fill = "purple", color = "black") + 
+  labs(title = "Histogram of Highway MPG", x = "Highway MPG", y = "Frequency")
+
+p4 <- ggplot(vehicle_data, aes(x = CO2_Emissions)) + 
+  geom_histogram(binwidth = 10, fill = "red", color = "black") + 
+  labs(title = "Histogram of CO2 Emissions", x = "CO2 Emissions", y = "Frequency")
+
+# Boxplots
+p5 <- ggplot(vehicle_data, aes(y = Engine_Size)) + 
+  geom_boxplot(fill = "blue", color = "black") + 
+  labs(title = "Boxplot of Engine Size", y = "Engine Size")
+
+p6 <- ggplot(vehicle_data, aes(y = City_MPG)) + 
+  geom_boxplot(fill = "green", color = "black") + 
+  labs(title = "Boxplot of City MPG", y = "City MPG")
+
+p7 <- ggplot(vehicle_data, aes(y = Highway_MPG)) + 
+  geom_boxplot(fill = "purple", color = "black") + 
+  labs(title = "Boxplot of Highway MPG", y = "Highway MPG")
+
+p8 <- ggplot(vehicle_data, aes(y = CO2_Emissions)) + 
+  geom_boxplot(fill = "red", color = "black") + 
+  labs(title = "Boxplot of CO2 Emissions", y = "CO2 Emissions")
+
+library(gridExtra)
+# Arrange histograms and boxplots
+grid.arrange(p1, p2, p3, p4, nrow = 2, ncol = 2)
+grid.arrange(p5, p6, p7, p8, nrow = 2, ncol = 2)
+
+# Multivariate Plots
+
+# Scatter plots
+p9 <- ggplot(vehicle_data, aes(x = Engine_Size, y = CO2_Emissions)) + 
+  geom_point(color = "blue") + 
+  labs(title = "Scatter Plot of CO2 Emissions vs Engine Size", x = "Engine Size", y = "CO2 Emissions")
+
+p10 <- ggplot(vehicle_data, aes(x = City_MPG, y = CO2_Emissions)) + 
+  geom_point(color = "green") + 
+  labs(title = "Scatter Plot of CO2 Emissions vs City MPG", x = "City MPG", y = "CO2 Emissions")
+
+p11 <- ggplot(vehicle_data, aes(x = Highway_MPG, y = CO2_Emissions)) + 
+  geom_point(color = "purple") + 
+  labs(title = "Scatter Plot of CO2 Emissions vs Highway MPG", x = "Highway MPG", y = "CO2 Emissions")
+
+# Interaction plots
+p12 <- ggplot(vehicle_data, aes(x = Cylinders, y = CO2_Emissions, color = Fuel_Type)) + 
+  geom_boxplot() + 
+  labs(title = "Interaction Plot of CO2 Emissions by Cylinders and Fuel Type", x = "Cylinders", y = "CO2 Emissions")
+
+library(GGally)
+# Pair plots (scatterplot matrix)
+pairs_data <- vehicle_data[, sapply(vehicle_data, is.numeric)]
+p13 <- ggpairs(pairs_data)
+
+# Arrange scatter plots and interaction plot
+grid.arrange(p9, p10, p11, p12, nrow = 2, ncol = 2)
+
+# Display pair plots
+print(p13)
+```
+
+# Preprocessing and Data Transformation
+## Missing Values
+```{r Missing Values}
+# Check for missing values
+missing_values <- sum(is.na(vehicle_data))
+
+# Display summary of missing values
+print(paste("Number of missing values:", missing_values))
+
+# Summary of missing values by column
+print(summary(is.na(vehicle_data)))
+
+vehicle_data <- vehicle_data[, -1]
+
+write.csv(vehicle_data, file = "modified_vehicle_dataset.csv", row.names = FALSE)
+```
+
+# Training Model
+## Data Splitting
+```{r}
+# Load required package
+library(caret)
+
+# Split data into training and testing sets
+set.seed(123) # for reproducibility
+trainIndex <- createDataPartition(vehicle_data$CO2_Emissions, p = .7, 
+                                  list = FALSE, 
+                                  times = 1)
+trainData <- vehicle_data[trainIndex, ]
+testData <- vehicle_data[-trainIndex, ]
+# Print the dimensions of the training and testing sets
+print("Dimensions of Training Data:")
+print(dim(trainData))
+print("Dimensions of Testing Data:")
+print(dim(testData))
+```
+
+## Bootstrapping
+```{r Bootstrapping}
+# Bootstrapping
+set.seed(123) # for reproducibility
+boot_samples <- createResample(trainData$CO2_Emissions, times = 1000)
+
+# Example of using bootstrap samples to calculate mean and its confidence interval
+boot_means <- sapply(boot_samples, function(indices) {
+  mean(trainData$CO2_Emissions[indices])
+})
+
+# Calculate the bootstrap confidence interval
+boot_mean <- mean(boot_means)
+boot_ci <- quantile(boot_means, c(0.025, 0.975))
+
+print(paste("Bootstrap Mean:", boot_mean))
+print(paste("Bootstrap 95% CI:", boot_ci))
+```
+
+## Cross-Validation
+```{r Cross-validation}
+# k-Fold Cross-Validation
+set.seed(123) # for reproducibility
+train_control <- trainControl(method = "cv", number = 10) # 10-fold cross-validation
+
+# Train the model using k-fold cross-validation
+model_cv <- train(CO2_Emissions ~ Engine_Size + Cylinders + Fuel_Type + City_MPG + Highway_MPG, 
+                  data = trainData, 
+                  method = "lm", 
+                  trControl = train_control)
+
+# Print cross-validation results
+print(model_cv)
+
+# Predict on the test data
+predictions_cv <- predict(model_cv, testData)
+
+# Evaluate model performance
+rmse_cv <- sqrt(mean((testData$CO2_Emissions - predictions_cv)^2))
+r_squared_cv <- cor(predictions_cv, testData$CO2_Emissions)^2
+
+print(paste("RMSE:", rmse_cv))
+print(paste("R-squared:", r_squared_cv))
+```
+
+## Train Different Models
+```{r Model Training}
+# Load necessary libraries
+library(caret)
+library(e1071) # For SVM
+
+
+# k-Fold Cross-Validation
+set.seed(123) # for reproducibility
+train_control <- trainControl(method = "cv", number = 10) # 10-fold cross-validation
+
+# Train linear regression model
+model_lm <- train(CO2_Emissions ~ ., 
+                  data = vehicle_data, 
+                  method = "lm", 
+                  trControl = train_control)
+
+# Train decision tree regression model
+model_tree <- train(CO2_Emissions ~ ., 
+                    data = vehicle_data, 
+                    method = "rpart", 
+                    trControl = train_control)
+
+
+
+# Print cross-validation results for all models
+print("Linear Regression:")
+print(model_lm)
+print("")
+
+print("Decision Tree Regression:")
+print(model_tree)
+print("")
+```
+
+## Performance Comparison
+```{r Performance comparison}
+# Compare model performance using resamples
+resamps <- resamples(list(LinearRegression = model_lm, 
+                          DecisionTree = model_tree))
+
+# Summarize the results
+summary(resamps)
+```
+
+## Saving Model
+```{r Saving Model}
+# Saving the linear regression model
+saveRDS(model_lm, file = "./models/linear_regression_model.rds")
+
+# Load the saved linear regression model
+loaded_linear_regression_model <- readRDS("./models/linear_regression_model.rds")
+
+# Prepare new data for prediction
+new_data <- data.frame(
+  Vehicle_ID = 1,
+  Engine_Size = c(2.0, 2.5, 1.8),  # Example Engine_Size values
+  Cylinders = c("4", "6", "4"),  # Example Cylinders values
+  Fuel_Type = c("Gasoline", "Diesel", "Gasoline"),  # Example Fuel_Type values
+  City_MPG = c(25, 20, 28),  # Example City_MPG values
+  Highway_MPG = c(32, 28, 35)  # Example Highway_MPG values
+)
+
+# Use the loaded model to make predictions for new data
+predictions_loaded_model <- predict(loaded_linear_regression_model, newdata = new_data)
+
+# Print predictions
+print(predictions_loaded_model)
+```
+
